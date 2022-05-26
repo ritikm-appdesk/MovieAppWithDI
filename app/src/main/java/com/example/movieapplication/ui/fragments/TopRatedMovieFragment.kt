@@ -7,23 +7,23 @@ import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapplication.R
 import com.example.movieapplication.adapters.MovieAdapter
-import com.example.movieapplication.database.MovieRepository
 import com.example.movieapplication.models.Result
 import com.example.movieapplication.utils.Constants
 import com.example.movieapplication.utils.Resources
 import com.example.movieapplication.viewmodels.MovieViewModel
-import com.example.movieapplication.viewmodels.MovieViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_top_rated_movie.*
 
+@AndroidEntryPoint
 class TopRatedMovieFragment : Fragment(R.layout.fragment_top_rated_movie) {
-    private lateinit var viewModel: MovieViewModel
+    private val viewModel: MovieViewModel by viewModels()
     private lateinit var movieAdapter: MovieAdapter
 
     var isScrolling = false
@@ -39,9 +39,6 @@ class TopRatedMovieFragment : Fragment(R.layout.fragment_top_rated_movie) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val repository  = MovieRepository()
-        val viewModelFactory = MovieViewModelFactory(repository)
-        viewModel = ViewModelProvider(this,viewModelFactory).get(MovieViewModel::class.java)
         if(Constants.isOnline(requireActivity())){
             viewModel()
         }else{
@@ -57,10 +54,6 @@ class TopRatedMovieFragment : Fragment(R.layout.fragment_top_rated_movie) {
         }
     }
     private fun viewModel(){
-        val repository  = MovieRepository()
-        val viewModelFactory = MovieViewModelFactory(repository)
-        viewModel = ViewModelProvider(this,viewModelFactory).get(MovieViewModel::class.java)
-
         viewModel.getTopRated()
         viewModel.topRatedMovieLs.observe(viewLifecycleOwner) { response ->
             when (response) {

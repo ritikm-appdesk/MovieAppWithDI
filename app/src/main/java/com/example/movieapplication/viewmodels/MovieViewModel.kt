@@ -9,11 +9,14 @@ import com.example.movieapplication.models.Result
 import com.example.movieapplication.models.details.MovieDetailsResponse
 import com.example.movieapplication.models.images.ImagesResponse
 import com.example.movieapplication.utils.Resources
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import javax.inject.Inject
 
-class MovieViewModel(private val repo: MovieRepository) : ViewModel() {
+@HiltViewModel
+class MovieViewModel @Inject constructor(private val repo: MovieRepository) : ViewModel() {
     var popularMovieLs: MutableLiveData<Resources<MovieResponse>> = MutableLiveData()
     var popularPage = 1
     private var popularResponse: MovieResponse? = null

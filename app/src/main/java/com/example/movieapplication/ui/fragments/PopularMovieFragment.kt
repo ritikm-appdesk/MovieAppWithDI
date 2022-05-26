@@ -7,26 +7,26 @@ import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapplication.R
 import com.example.movieapplication.adapters.MovieAdapter
-import com.example.movieapplication.database.MovieRepository
 import com.example.movieapplication.models.Result
 import com.example.movieapplication.utils.Constants.Companion.POPULARRECYCLERVIEW
 import com.example.movieapplication.utils.Constants.Companion.arrayGenre
 import com.example.movieapplication.utils.Constants.Companion.isOnline
 import com.example.movieapplication.utils.Resources
 import com.example.movieapplication.viewmodels.MovieViewModel
-import com.example.movieapplication.viewmodels.MovieViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_popular_movie.*
 
+@AndroidEntryPoint
 class PopularMovieFragment : Fragment(R.layout.fragment_popular_movie) {
 
-    private lateinit var viewModel: MovieViewModel
+    private val viewModel: MovieViewModel by viewModels()
     private lateinit var movieAdapter: MovieAdapter
 
     var isScrolling = false
@@ -40,17 +40,14 @@ class PopularMovieFragment : Fragment(R.layout.fragment_popular_movie) {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val repository  = MovieRepository()
-        val viewModelFactory = MovieViewModelFactory(repository)
-        viewModel = ViewModelProvider(this,viewModelFactory).get(MovieViewModel::class.java)
-       if(isOnline(requireActivity())){
+        if(isOnline(requireActivity())){
            defaultText.visibility = View.GONE
            viewModel()
-       }else{
+        }else{
            Toast.makeText(activity,"You don't have internet connection to proceed",Toast.LENGTH_SHORT).show()
            hsv.visibility = View.GONE
            defaultText.visibility = View.VISIBLE
-       }
+        }
         str.setOnRefreshListener {
             if(isOnline(requireActivity())){
                 defaultText.visibility = View.GONE

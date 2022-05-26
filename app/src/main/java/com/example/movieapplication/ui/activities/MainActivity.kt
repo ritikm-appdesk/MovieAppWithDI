@@ -9,8 +9,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.movieapplication.R
 import com.example.movieapplication.databinding.ActivityMainBinding
 import com.example.movieapplication.utils.Constants.Companion.isOnline
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding
@@ -29,13 +31,16 @@ class MainActivity : AppCompatActivity() {
             fragment.findNavController().navigate(R.id.popularMovieFragment)
             bottomNavigationView.setupWithNavController(fragment.findNavController())
             fab.setOnClickListener {
-                for (i in 0 until fragment.childFragmentManager.backStackEntryCount) {
-                    fragment.findNavController().popBackStack()
-                }
+//                for (i in 0 until fragment.childFragmentManager.backStackEntryCount) {
+//                    fragment.findNavController().popBackStack()
+//                }
                 fragment.findNavController().navigate(R.id.searchFragment)
 
             }
             bottomNavigationView.setOnItemSelectedListener {
+                for (i in 0 until fragment.childFragmentManager.backStackEntryCount) {
+                    fragment.findNavController().popBackStack()
+                }
                 when (it.itemId) {
                     R.id.popularMovieFragment -> {
                         fragment.findNavController().navigate(R.id.popularMovieFragment)
@@ -44,9 +49,7 @@ class MainActivity : AppCompatActivity() {
                         fragment.findNavController().navigate(R.id.topRatedMovieFragment)
                     }
                 }
-                for (i in 0 until fragment.childFragmentManager.backStackEntryCount) {
-                    fragment.findNavController().popBackStack()
-                }
+
                 true
 
             }

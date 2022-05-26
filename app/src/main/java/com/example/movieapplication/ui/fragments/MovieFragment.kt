@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,7 +17,6 @@ import coil.transform.BlurTransformation
 import coil.transform.GrayscaleTransformation
 import com.example.movieapplication.R
 import com.example.movieapplication.adapters.MovieAdapter
-import com.example.movieapplication.database.MovieRepository
 import com.example.movieapplication.models.Result
 import com.example.movieapplication.models.images.Poster
 import com.example.movieapplication.utils.Constants
@@ -26,11 +25,12 @@ import com.example.movieapplication.utils.Constants.Companion.SIMILARRECYCLERVIE
 import com.example.movieapplication.utils.Constants.Companion.URLFORIMAGE
 import com.example.movieapplication.utils.Resources
 import com.example.movieapplication.viewmodels.MovieViewModel
-import com.example.movieapplication.viewmodels.MovieViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_movie.*
 import java.text.DecimalFormat
 
 
+@AndroidEntryPoint
 class MovieFragment : Fragment() {
 
     private lateinit var imageAdapter: MovieAdapter
@@ -38,7 +38,7 @@ class MovieFragment : Fragment() {
     private val args: MovieFragmentArgs by navArgs()
     private var list: List<Result>? = null
     private var imageList: List<Poster>? = null
-    private lateinit var viewModel: MovieViewModel
+    private val viewModel: MovieViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -81,9 +81,6 @@ class MovieFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun viewModel(id: Int) {
-        val repository = MovieRepository()
-        val viewModelFactory = MovieViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MovieViewModel::class.java)
         viewModel.getDetails(id)
         viewModel.movieDetails.observe(viewLifecycleOwner) { response ->
             when (response) {
@@ -166,7 +163,6 @@ class MovieFragment : Fragment() {
                 }
             }
         }
-
     }
 
     private fun setupRecyclerView() {

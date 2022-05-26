@@ -8,30 +8,30 @@ import android.widget.AbsListView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapplication.R
 import com.example.movieapplication.adapters.MovieAdapter
-import com.example.movieapplication.database.MovieRepository
 import com.example.movieapplication.models.Result
 import com.example.movieapplication.utils.Constants
 import com.example.movieapplication.utils.Constants.Companion.isOnline
 import com.example.movieapplication.utils.Resources
 import com.example.movieapplication.viewmodels.MovieViewModel
-import com.example.movieapplication.viewmodels.MovieViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private lateinit var movieAdapter: MovieAdapter
-    private lateinit var viewModel: MovieViewModel
+    private val viewModel: MovieViewModel by viewModels()
 
     var isScrolling = false
     var position = 0
@@ -70,9 +70,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     }
 
     private fun viewModel(){
-        val repository  = MovieRepository()
-        val viewModelFactory = MovieViewModelFactory(repository)
-        viewModel = ViewModelProvider(this,viewModelFactory).get(MovieViewModel::class.java)
         viewModel.searchDetails.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resources.Success -> {
